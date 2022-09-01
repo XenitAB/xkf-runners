@@ -1,2 +1,2 @@
-# xmf-azure-runners
-Azure images for Github Actions Runners and Azure Devops Agent Pools
+# xmf-runners
+Images for Github Actions Runners and Azure Devops Agent Pools
