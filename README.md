@@ -4,7 +4,7 @@ Images for Github Actions Runners and Azure Devops Agent Pools
 
 ## Build images
 
-### Authebtication through Azure CLI
+### Authentication through Azure CLI
 
 Make sure that `az login` is done before running a build:
 
@@ -16,12 +16,10 @@ make azdo-agent
 
 ### Using Service Principal
 
-runner/README.md)
-
 ```Bash
 PKR_VAR_client_id=xxxxxxxxxx \
 PKR_VAR_client_secret=oxxxxxxxxxx \
 PKR_VAR_subscription_id=xxxxxxxxxx \
 PKR_VAR_resource_group=xxxxxxxxxx \
-make azdo-agent
+make github-runner
 ```

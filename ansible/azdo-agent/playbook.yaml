@@ -34,6 +34,24 @@
         state: present
         update_cache: yes
 
+    # Extra dependecies for 22.04
+    - name: LINUX - SETUP - Ubuntu 22.04 - Install dependencies
+      apt:
+        name: [libicu70, liblttng-ust1]
+        state: present
+        update_cache: true
+
+    # This is required because Ubuntu 22.04 does not have libssl1 anymore but the agent requires it
+    - name: LINUX - SETUP - Ubuntu 22.04 - WORKAROUND dependencies
+      apt:
+        deb: http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+    - name: LINUX - SETUP - Ubuntu 22.04 - WORKAROUND Comment out openssl_conf
+      lineinfile:
+        dest: /etc/ssl/openssl.cnf
+        regexp: "^openssl_conf = openssl_init"
+        line: "#openssl_conf = openssl_init"
+        state: present
+
     - name: Set fact for azure-cli prerequisite packages
       set_fact:
         azure_cli_prereq_packages:
@@ -98,9 +116,9 @@
 
     - name: Install docker-compose
       get_url:
-        url : https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
-        mode: '0755'
+        mode: "0755"
       when: not docker_stat.stat.exists
 
     - name: Set fact for powershell packages

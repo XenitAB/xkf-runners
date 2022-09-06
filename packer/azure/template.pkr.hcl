@@ -56,8 +56,6 @@ source "azure-arm" "agent" {
     image_version       = var.version
     replication_regions = [var.location]
   }
-
-  # skip_create_image  = true
 }
 
 build {
