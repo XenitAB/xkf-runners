@@ -1,0 +1,12 @@
+[Unit]
+Description=github-runner-stop
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/etc/github-runner
+RemainAfterExit=true
+ExecStop=/etc/github-runner/github-runner.sh --action=REMOVE
+
+[Install]
+WantedBy=multi-user.target
