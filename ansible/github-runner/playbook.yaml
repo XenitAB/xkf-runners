@@ -1,0 +1,224 @@
+# playbook.yml
+- name: "Provision Image"
+  hosts: default
+  become: true
+
+  tasks:
+    - name: Set fact for default packages
+      set_fact:
+        default_packages:
+          - awscli
+          - ca-certificates
+          - curl
+          - jq
+          - git
+          - iputils-ping
+          - libcurl4
+          - libunwind8
+          - wget
+          - netcat
+          - unzip
+          - build-essential
+          - openssh-client
+          - mono-complete
+          - software-properties-common
+          - apt-transport-https
+          - python3
+          - python3-setuptools
+          - python3-pip
+          - python3-venv
+
+    - name: install default_packages
+      apt:
+        name: "{{ default_packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Set fact for azure-cli prerequisite packages
+      set_fact:
+        azure_cli_prereq_packages:
+          - ca-certificates
+          - curl
+          - apt-transport-https
+          - lsb-release
+          - gnupg
+
+    - name: install azure_cli_prereq_packages
+      apt:
+        name: "{{ azure_cli_prereq_packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Add APT signing key from Microsoft
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
+        state: present
+
+    - name: Add azure-cli repository into sources list
+      apt_repository:
+        repo: "deb https://packages.microsoft.com/repos/azure-cli/ {{ ansible_distribution_release | lower }} main"
+        state: present
+        filename: azure-cli
+
+    - name: Install azure-cli
+      apt:
+        name: azure-cli
+        state: present
+        update_cache: yes
+
+    - name: Install packages-microsoft-prod.deb
+      apt:
+        deb: "https://packages.microsoft.com/config/{{ ansible_distribution | lower }}/{{ ansible_distribution_version }}/packages-microsoft-prod.deb"
+
+    - name: Set fact for Moby (Docker client) packages
+      set_fact:
+        moby_packages:
+          - moby-engine
+          - moby-cli
+          - moby-buildx
+
+    - name: install moby_packages
+      apt:
+        name: "{{ moby_packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Moby (Docker) service
+      systemd:
+        name: docker
+        state: started
+        daemon_reload: yes
+        enabled: yes
+
+    - name: Check if docker-compose is installed
+      stat:
+        path: /usr/local/bin/docker-compose
+      register: docker_stat
+
+    - name: Install docker-compose
+      get_url:
+        url : https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+      when: not docker_stat.stat.exists
+
+    - name: Set fact for powershell packages
+      set_fact:
+        powershell_packages:
+          - powershell
+
+    - name: install powershell_packages
+      apt:
+        name: "{{ powershell_packages }}"
+        state: present
+        update_cache: yes
+
+    - name: Create the directory /etc/github-runner
+      file:
+        path: /etc/github-runner
+        state: directory
+        mode: "0755"
+
+    - name: Copy github-runner.sh
+      copy:
+        src: github-runner.sh
+        dest: /etc/github-runner/github-runner.sh
+        owner: root
+        group: root
+        mode: "0744"
+
+    - name: Copy github-runner-start.service
+      copy:
+        src: github-runner-start.service
+        dest: /etc/systemd/system/github-runner-start.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable github-runner-start.service
+      systemd:
+        name: github-runner-start.service
+        enabled: yes
+
+    - name: Copy github-runner-stop.service
+      copy:
+        src: github-runner-stop.service
+        dest: /etc/systemd/system/github-runner-stop.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable github-runner-stop.service
+      systemd:
+        name: github-runner-stop.service
+        enabled: yes
+
+    - name: Download github-runner
+      get_url:
+        url: https://github.com/XenitAB/github-runner/releases/download/0.3.0/github-runner
+        dest: /etc/github-runner/github-runner
+        checksum: sha256:ac113b02254d0b7893d358a53179ca8d1a4d7a5a2be4b561200eef98b4a45b1a
+
+    - name: Make github-runner executable
+      file:
+        dest: /etc/github-runner/github-runner
+        mode: a+x
+
+    - name: Download actions-runner archive
+      get_url:
+        url: https://github.com/actions/runner/releases/download/v2.274.2/actions-runner-linux-x64-2.274.2.tar.gz
+        dest: /etc/github-runner/actions-runner.tar.gz
+        checksum: sha256:599265a0d520d8fddd3e9579cd91ea78a5c195fdb7cbf62c89597f2bbd9947a6
+
+    - name: Extract actions-runner archive
+      unarchive:
+        remote_src: yes
+        src: /etc/github-runner/actions-runner.tar.gz
+        dest: /etc/github-runner
+
+    - name: Create the directory /etc/xenit
+      file:
+        path: /etc/xenit
+        state: directory
+        mode: "0755"
+
+    - name: Copy docker-pull.sh
+      copy:
+        src: docker-pull.sh
+        dest: /etc/xenit/docker-pull.sh
+        owner: root
+        group: root
+        mode: "0744"
+
+    - name: Copy docker-pull.service
+      copy:
+        src: docker-pull.service
+        dest: /etc/systemd/system/docker-pull.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable docker-pull.service
+      systemd:
+        name: docker-pull.service
+        enabled: yes
+
+    - name: apt upgrade
+      apt:
+        upgrade: yes
+        update_cache: yes
+
+    - name: apt autoremove
+      apt:
+        autoremove: yes
+
+    - name: apt autoclean
+      apt:
+        autoclean: yes
+
+    - name: cleanup /var/lib/apt/lists/
+      shell: /bin/rm -rf /var/lib/apt/lists/*
+
+    - name: cleanup /etc/apt/sources.list.d/
+      shell: /bin/rm -rf /etc/apt/sources.list.d/*
