@@ -34,6 +34,10 @@ variable "image_name" {
   type = string
 }
 
+variable "gallery_name" {
+  type = string
+}
+
 source "azure-arm" "agent" {
   use_azure_cli_auth                = var.use_azure_cli_auth
   subscription_id                   = var.subscription_id
@@ -51,7 +55,7 @@ source "azure-arm" "agent" {
   shared_image_gallery_destination {
     subscription        = var.subscription_id
     resource_group      = var.resource_group
-    gallery_name        = "xkf"
+    gallery_name        = var.gallery_name
     image_name          = var.image_name
     image_version       = var.version
     replication_regions = [var.location]
