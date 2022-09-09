@@ -1,4 +1,4 @@
-# xmf-runners
+# xkf-runners
 
 Code to build Azure images for Github Actions Runners and Azure Devops Agent Pools. The images will be published
 to a shared image gallery. The shared image gallery is expected to be set up with image definitions for `azdo-agent`
