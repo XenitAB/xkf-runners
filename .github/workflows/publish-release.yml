@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Clone Repository
         uses: actions/checkout@v3
-      - name: Build
+      - name: Build azdo-agent
         run: |
-          make all
+          make azdo-agent
+      - name: Build github-runner
+        run: |
+          make github-runner
