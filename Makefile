@@ -61,7 +61,7 @@ all: azdo-agent github-runner
 .PHONY: validate
 validate:
 	trap '$(CLEANUP_COMMAND)' EXIT
-	echo PKR_VAR_version=$(VERSION) >> $(TEMP_ENV_FILE)
+	echo PKR_VAR_version=1.0.0 >> $(TEMP_ENV_FILE)
 	echo PKR_VAR_resource_group=rg-dev-we-images >> $(TEMP_ENV_FILE)
 	echo PKR_VAR_gallery_name=xkf >> $(TEMP_ENV_FILE)
 	echo PKR_VAR_image_name=azdo-agent >> $(TEMP_ENV_FILE)

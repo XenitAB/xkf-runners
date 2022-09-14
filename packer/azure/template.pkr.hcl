@@ -69,21 +69,21 @@ source "azure-arm" "agent" {
   skip_create_image = var.skip_create_image
 }
 
-# build {
-#   sources = ["source.azure-arm.agent"]
-#   name    = var.image_name
+build {
+  sources = ["source.azure-arm.agent"]
+  name    = var.image_name
 
-#   provisioner "ansible" {
-#     use_proxy     = false
-#     playbook_file = "${path.root}/../../ansible/${var.image_name}/playbook.yaml"
-#   }
+  provisioner "ansible" {
+    use_proxy     = false
+    playbook_file = "${path.root}/../../ansible/${var.image_name}/playbook.yaml"
+  }
 
-#   # Standard Linux deprovisioning
-#   provisioner "shell" {
-#     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
-#     inline = [
-#       "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
-#     ]
-#     inline_shebang = "/bin/sh -x"
-#   }
-# }
+  # Standard Linux deprovisioning
+  provisioner "shell" {
+    execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
+    inline = [
+      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+    ]
+    inline_shebang = "/bin/sh -x"
+  }
+}
