@@ -35,7 +35,13 @@ variable "image_name" {
 }
 
 variable "gallery_name" {
-  type = string
+  type    = string
+  default = "xkf"
+}
+
+variable "skip_create_image" {
+  type    = bool
+  default = false
 }
 
 source "azure-arm" "agent" {
@@ -46,9 +52,9 @@ source "azure-arm" "agent" {
   image_publisher                   = "Canonical"
   image_offer                       = "0001-com-ubuntu-server-jammy"
   image_sku                         = "22_04-lts"
-  location                          = var.location
   managed_image_name                = "${var.image_name}-${var.version}"
   managed_image_resource_group_name = var.resource_group
+  build_resource_group_name         = var.resource_group
   os_type                           = "Linux"
   vm_size                           = "Standard_DS2_v2"
 
@@ -60,23 +66,24 @@ source "azure-arm" "agent" {
     image_version       = var.version
     replication_regions = [var.location]
   }
+  skip_create_image = var.skip_create_image
 }
 
-build {
-  sources = ["source.azure-arm.agent"]
-  name    = var.image_name
+# build {
+#   sources = ["source.azure-arm.agent"]
+#   name    = var.image_name
 
-  provisioner "ansible" {
-    use_proxy     = false
-    playbook_file = "${path.root}/../../ansible/${var.image_name}/playbook.yaml"
-  }
+#   provisioner "ansible" {
+#     use_proxy     = false
+#     playbook_file = "${path.root}/../../ansible/${var.image_name}/playbook.yaml"
+#   }
 
-  # Standard Linux deprovisioning
-  provisioner "shell" {
-    execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
-    inline = [
-      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
-    ]
-    inline_shebang = "/bin/sh -x"
-  }
-}
+#   # Standard Linux deprovisioning
+#   provisioner "shell" {
+#     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
+#     inline = [
+#       "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+#     ]
+#     inline_shebang = "/bin/sh -x"
+#   }
+# }
