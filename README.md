@@ -13,7 +13,6 @@ Make sure that `az login` is done before running a build:
 ```Bash
 PKR_VAR_use_azure_cli_auth=true \
 PKR_VAR_version=x.x.x \
-PKR_VAR_resource_group=xxxxxxxxxx \
 make azdo-agent
 ```
 
@@ -23,7 +22,6 @@ make azdo-agent
 PKR_VAR_client_id=xxxxxxxxxx \
 PKR_VAR_client_secret=xxxxxxxxxx \
 PKR_VAR_subscription_id=xxxxxxxxxx \
-PKR_VAR_resource_group=xxxxxxxxxx \
 PKR_VAR_version=x.x.x \
 make github-runner
 ```

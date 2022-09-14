@@ -5,6 +5,7 @@ variable "location" {
 
 variable "resource_group" {
   type = string
+  default = "rg-prod-we-images"
 }
 
 variable "version" {
