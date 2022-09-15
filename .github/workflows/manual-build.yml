@@ -10,7 +10,7 @@ on:
         default: "false"
         required: false
       target:
-        description: The build target 'azdo-agent', 'github-runner' or 'all'
+        description: The build target 'azdo-agent' or 'github-runner'
         required: true
 
 jobs:

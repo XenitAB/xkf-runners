@@ -55,9 +55,6 @@ github-runner: setup
 	echo PKR_VAR_image_name=github-runner >> $(TEMP_ENV_FILE)
 	$(DOCKER_RUN) build /tmp/packer/azure/template.pkr.hcl
 	
-.PHONY: all
-all: azdo-agent github-runner
-	
 .PHONY: validate
 validate:
 	trap '$(CLEANUP_COMMAND)' EXIT
