@@ -11,17 +11,12 @@ TEMP_ENV_FILE:=$(shell mktemp)
 DOCKER_RUN:=docker run $(TTY_OPTIONS) --env-file $(TEMP_ENV_FILE) -v $(AZURE_CONFIG_DIR):/work/.azure -v $${PWD}:/tmp $(IMAGE) packer
 CLEANUP_COMMAND:=$(MAKE) --no-print-directory teardown TEMP_ENV_FILE=$(TEMP_ENV_FILE)
 
-
 .PHONY: check-env
 .SILENT: check-env
 check-env:
 ifndef PKR_VAR_version
 	$(error PKR_VAR_version is undefined)
 endif
-ifndef PKR_VAR_resource_group
-	$(error PKR_VAR_resource_group is undefined)
-endif
-
 
 .PHONY: setup
 .SILENT: setup
@@ -36,7 +31,6 @@ setup: check-env
 	if [ -z "$${PKR_VAR_subscription_id}" ]; then
 		echo PKR_VAR_subscription_id=$$(az account show -o tsv --query 'id') >> $(TEMP_ENV_FILE)
 	fi
-
 
 .PHONY: teardown
 .SILENT: teardown
