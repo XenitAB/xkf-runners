@@ -29,6 +29,10 @@
           - python3-venv
 
     - name: install default_packages
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         name: "{{ default_packages }}"
         state: present
@@ -36,6 +40,10 @@
 
     # Extra dependecies for 22.04
     - name: LINUX - SETUP - Ubuntu 22.04 - Install dependencies
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         name: [libicu70, liblttng-ust1]
         state: present
@@ -43,8 +51,13 @@
 
     # This is required because Ubuntu 22.04 does not have libssl1 anymore but the agent requires it
     - name: LINUX - SETUP - Ubuntu 22.04 - WORKAROUND dependencies
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         deb: http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+
     - name: LINUX - SETUP - Ubuntu 22.04 - WORKAROUND Comment out openssl_conf
       lineinfile:
         dest: /etc/ssl/openssl.cnf
@@ -62,30 +75,50 @@
           - gnupg
 
     - name: install azure_cli_prereq_packages
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         name: "{{ azure_cli_prereq_packages }}"
         state: present
         update_cache: yes
 
     - name: Add APT signing key from Microsoft
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt_key:
         url: https://packages.microsoft.com/keys/microsoft.asc
         keyring: /etc/apt/trusted.gpg.d/microsoft.gpg
         state: present
 
     - name: Add azure-cli repository into sources list
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt_repository:
         repo: "deb https://packages.microsoft.com/repos/azure-cli/ {{ ansible_distribution_release | lower }} main"
         state: present
         filename: azure-cli
 
     - name: Install azure-cli
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         name: azure-cli
         state: present
         update_cache: yes
 
     - name: Install packages-microsoft-prod.deb
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         deb: "https://packages.microsoft.com/config/{{ ansible_distribution | lower }}/{{ ansible_distribution_version }}/packages-microsoft-prod.deb"
 
@@ -97,6 +130,10 @@
           - moby-buildx
 
     - name: install moby_packages
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         name: "{{ moby_packages }}"
         state: present
@@ -127,6 +164,10 @@
           - powershell
 
     - name: install powershell_packages
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         name: "{{ powershell_packages }}"
         state: present
@@ -160,15 +201,27 @@
         enabled: yes
 
     - name: apt upgrade
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         upgrade: yes
         update_cache: yes
 
     - name: apt autoremove
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         autoremove: yes
 
     - name: apt autoclean
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
       apt:
         autoclean: yes
 
