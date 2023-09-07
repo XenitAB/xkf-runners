@@ -88,7 +88,7 @@ if [[ "${ACTION}" == "REGISTER" ]]; then
 
     chown -R ghrunner:ghrunner /etc/github-runner
 
-    runuser -l ghrunner -c "${GITHUB_RUNNER_CONFIG_SCRIPT} --url https://github.com/${GITHUB_RUNNER_ORGANIZATION} --token ${GITHUB_RUNNER_REGISTER_TOKEN} --name $(hostname) --work /home/ghrunner --unattended --replace"
+    runuser -l ghrunner -c "${GITHUB_RUNNER_CONFIG_SCRIPT} --url https://github.com/${GITHUB_RUNNER_ORGANIZATION} --labels self-hosted,x64,linux,xks --token ${GITHUB_RUNNER_REGISTER_TOKEN} --name $(hostname) --work /home/ghrunner --unattended --replace"
     ${GITHUB_RUNNER_SERVICE_SCRIPT} install ghrunner
     ${GITHUB_RUNNER_SERVICE_SCRIPT} start
 elif [[ "${ACTION}" == "REMOVE" ]]; then
