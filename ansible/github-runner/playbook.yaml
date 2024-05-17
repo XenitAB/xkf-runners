@@ -113,7 +113,7 @@
 
     - name: Install docker-compose
       get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+        url: https://github.com/docker/compose/releases/download/2.27.0/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: "0755"
       when: not docker_stat.stat.exists
@@ -185,9 +185,9 @@
 
     - name: Download actions-runner archive
       get_url:
-        url: https://github.com/actions/runner/releases/download/v2.305.0/actions-runner-linux-x64-2.305.0.tar.gz
+        url: https://github.com/actions/runner/releases/download/v2.316.1/actions-runner-linux-x64-2.316.1.tar.gz
         dest: /etc/github-runner/actions-runner.tar.gz
-        checksum: sha256:737bdcef6287a11672d6a5a752d70a7c96b4934de512b7eb283be6f51a563f2f
+        checksum: sha256:d62de2400eeeacd195db91e2ff011bfb646cd5d85545e81d8f78c436183e09a8
 
     - name: Extract actions-runner archive
       unarchive:
