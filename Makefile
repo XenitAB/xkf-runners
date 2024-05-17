@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL:=/bin/bash
 
-IMAGE="ghcr.io/xenitab/github-actions/tools:2022.08.4"
+IMAGE="ghcr.io/xenitab/github-actions/tools:2023.12.1"
 TEMP_ENV_FILE:=$(shell mktemp)
 
 AZURE_CONFIG_DIR := $(if $(AZURE_CONFIG_DIR),$(AZURE_CONFIG_DIR),"$${HOME}/.azure")
